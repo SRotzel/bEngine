@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-//#define context b_info // For later use, perhaps to handle multiple instances
+//#define b_context b_info // For later use, perhaps to handle multiple instances
 #define println(m, ...) printf(m,  __VA_ARGS__, "\n");
 #define ASSERT(_e, ...) if (!(_e)) { fprintf(stderr, __VA_ARGS__); exit(B_UNKF); }
 
@@ -44,11 +44,16 @@ typedef ssize_t  isize;
 typedef struct v2_s  { f32 x, y; } v2;
 typedef struct v2i_s { i32 x, y; } v2i;
 
+typedef SDL_Event B_input_event;
+
 typedef enum {
-    B_SUCCESS        = 0,
-    B_UNKF           = 1,
-    B_OTHER          = -1,
-    B_SDL_FAILED     = -2
+    B_SUCCESS        = 0, 
+    B_UNKF           = 1, // unkf = unknown failure
+    B_OTHER          = -1, 
+    B_SDL_INIT_FAIL  = -2, // failed to initialize SDL ()
+    B_SDL_RUN_FAIL   = -3, // sdl failed during runtime
+    B_SDL_CLOSE_FAIL = -4, // sdl failed while shut down
+    B_UNFIT_ID       = -5  // error during pipeline update
 } b_returntype;
 
 typedef struct {
@@ -57,14 +62,14 @@ typedef struct {
     char* name;
 } b_info;
 
-// Objects in the world
+// b_objects in the world
 typedef struct {
     v2 position, direction, plane;
     char* name;
     i64 id;
-} Object;
-// npc objects that should still be upated every tick
-typedef Object* Pipeline;
+} b_object;
+// npc b_objects that should still be upated every tick
+typedef b_object* Pipeline;
 
 typedef struct {
     char *title;
@@ -74,11 +79,11 @@ typedef struct {
     SDL_Texture *texture;
 
     Pipeline pipe;
-    Object player;
-} context;
+    b_object player;
+} b_context;
 
 
-b_returntype init_context(b_info, context*);
-b_returntype tick(context*);
-b_returntype render_context(context*);
-b_returntype close(context*);
+b_returntype InitContext(b_info, b_context*);
+b_returntype Tick(b_context*);
+b_returntype RenerPipeline(Pipeline );
+b_returntype Close(b_context*);

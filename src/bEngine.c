@@ -1,24 +1,38 @@
-//#define DEBUG // uncomment to enable debug message
+// NOTE: to script objects, assign id to objects. Create folder with its name as the id,
+// create behaviour scripts in said folder, and let the engine process them  
+
+#define DEBUG // uncomment to enable debug message
 #include <stdio.h>
 #include "bEngine.h"
 
+/* --- TO BE DEFINED BY USER --- */
 int main() {
     b_info info;
-    info.width = 620;
-    info.height = 920;
+    info.width = 384;
+    info.height = 216;
     info.name = "Test";
 
-    context c;
+    b_context c;
     c.title = "Context 1";
     c.id    = 1;
 
-    init_context(info, &c);
-    tick(&c);
+    InitContext(info, &c);
+    Tick(&c);
+    Close(&c);
 
     return B_SUCCESS;
 }
 
-b_returntype init_context(b_info i, context* c) {
+// Maybe create a struct if more info is given to the player
+void PlayerUpdate(const u8 keystate, b_context *cont) {
+    // Logic for player goes here, e.g.
+    if(cont->id == 1) {
+        
+    }
+}
+/* --- TO BE DEFINED BY USER --- */
+
+b_returntype InitContext(b_info i, b_context* c) {
     ASSERT(
         !SDL_Init(SDL_INIT_VIDEO),
         "SDL failed to initialize: %s\n",
@@ -56,16 +70,20 @@ b_returntype init_context(b_info i, context* c) {
     return B_SUCCESS;
 }
 
-b_returntype render_context(context *c) {
+b_returntype RenderPipeline(Pipeline p) {
     // memset(c->pixels, 0, sizeof(c->pixels));
 
     return B_SUCCESS;
 }
 
-b_returntype tick(context *c) {
+
+// This function takes a context, and will loop until the context is closed
+// It will process events, and update every Object in the Pipeline and the player
+// 1. Process inputs, 2. Update Objects 3. Render
+b_returntype Tick(b_context *c) {
     bool shouldClose = false;
     while(!shouldClose) {
-        SDL_Event event;
+        B_input_event event;
         while(SDL_PollEvent(&event)) {
             switch(event.type) {
                 case SDL_QUIT:
@@ -74,8 +92,27 @@ b_returntype tick(context *c) {
             }
         }
 
-        render_context(c);
+        // Update the context!
+        const u8 *keystate = SDL_GetKeyboardState(NULL);
+        PlayerUpdate(keystate, c); // To be defined by user!!!! IMPORTANT
+        for(int i = 0; i < sizeof(c->pipe); i++) { // Loop through all objects and update
+
+        }
+
+        RenderPipeline(c->pipe);
     }
+
+    return B_SUCCESS;
+}
+
+b_returntype Close(b_context *c) {
+    LOG("Shutting down application %s...\n", c->title)
+    SDL_DestroyTexture(c->texture);
+    LOG("Destroyed Texture!\n", "")
+    SDL_DestroyRenderer(c->renderer);
+    LOG("Destroyed Renderer!\n", "")
+    SDL_DestroyWindow(c->window);
+    LOG("Destroyed Window!\n", "")
 
     return B_SUCCESS;
 }
