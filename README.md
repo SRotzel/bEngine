@@ -1,4 +1,4 @@
-#Discontinued
+# Discontinued
 this version of this project will no longer be continued, if you want to have a C version, you are welcome to make your own with the currently provided source code.
 I will continue working on the c++ branch
 
