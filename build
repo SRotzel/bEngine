@@ -4,11 +4,11 @@ echo Building...
 if gcc src/*.cpp -lSDL2 -lm -lstdc++ -o bin/run; then
     echo Done!
     while true; do
-        read -p "Run Program? (y/n)" yn
+        read -p "Run Program? (Y/n)" yn
         case $yn in
             [Yy]* ) ./bin/run; break;;
             [Nn]* ) exit;;
-            * ) exit;;
+            * ) ./bin/run; break;;
         esac
     done
 else
