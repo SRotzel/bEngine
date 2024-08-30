@@ -4,6 +4,7 @@
 #define B_ENGINE_H_
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_keyboard.h>
 #include <iostream>
 #include <stdbool.h>
 #include "bObject.h"
@@ -13,9 +14,11 @@ typedef struct {
     int width, height;
     char* name;
     bObject *character;
+    bPipeline pipeline;
 } bInfo;
 
 bReturnType b_init();
+const u8* b_get_input();
 
 class bContext {
 public:
@@ -26,12 +29,14 @@ public:
     bReturnType Start();
     bReturnType Run();
     bReturnType Close();
-    void Tick();
 
     // TODO: implement that this actually returns usable return types ig
     bReturnType AddObject(bObject);
 
 private:
+    void Tick();
+    void Render();
+
     char* title;
     int id;
     SDL_Window   *window;

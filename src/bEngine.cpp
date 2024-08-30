@@ -10,6 +10,11 @@ bReturnType b_init() {
     return B_SUCCESS;
 }
 
+const u8* b_get_input() { 
+    SDL_PumpEvents();
+    return SDL_GetKeyboardState(NULL); 
+}
+
 bContext::bContext() {  }
 bContext::bContext(bInfo info) {
     this->window = SDL_CreateWindow(
@@ -56,6 +61,7 @@ bReturnType bContext::Run() {
                 shouldRun = false;
         }
         this->Tick();
+        this->Render();
     }
     this->Close();
     return B_SUCCESS;
@@ -72,4 +78,18 @@ void bContext::Tick() {
     this->player->Tick();
     /*for(int i = 0; i < sizeof(this->pipe); i++) 
         this->pipe[i].Tick();*/
+}
+
+void bContext::Render() {
+    SDL_Rect rect;
+    rect.x = player->getPosition().x;
+    rect.y = player->getPosition().y;
+
+    rect.w = player->getDimensions().x;
+    rect.h = player->getDimensions().y;
+    
+    SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
+    SDL_RenderDrawRect(this->renderer, &rect);
+    SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
+    SDL_RenderPresent(this->renderer);
 }
