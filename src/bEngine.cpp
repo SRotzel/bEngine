@@ -41,13 +41,17 @@ bContext::bContext(bInfo info) {
     LOG("Successfully created texture! \n", "")
     
     this->player = info.character;
+    for(bObject* o : info.pipeline) {
+        this->pipe.push_back(o);
+    }
 }
 
 bReturnType bContext::Start() {
     this->player->Awake();
-    /*for(int i = 0; i < sizeof(this->pipe); i++) {
-        this->pipe[i].Awake();
-    }*/
+    if(this->pipeEmpty)
+        return B_SUCCESS;
+    for(bObject* o : this->pipe)
+        o->Awake();
 
     return B_SUCCESS;
 }
@@ -69,15 +73,17 @@ bReturnType bContext::Run() {
 
 bReturnType bContext::Close() {
     this->player->End();
-    /*for(int i = 0; i < sizeof(this->pipe); i++) 
-        this->pipe[i].End();*/
+    for(bObject* o : this->pipe) 
+        o->End();
     return B_SUCCESS;
 }
 
 void bContext::Tick() {
     this->player->Tick();
-    /*for(int i = 0; i < sizeof(this->pipe); i++) 
-        this->pipe[i].Tick();*/
+    if(this->pipeEmpty)
+        return;
+    for(bObject* o : this->pipe) 
+        o->Tick();
 }
 
 void bContext::Render() {
@@ -92,4 +98,5 @@ void bContext::Render() {
     SDL_RenderDrawRect(this->renderer, &rect);
     SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
     SDL_RenderPresent(this->renderer);
+    SDL_RenderClear(this->renderer); 
 }

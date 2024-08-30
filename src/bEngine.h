@@ -44,6 +44,7 @@ private:
     SDL_Texture  *texture;
 
     bPipeline    pipe;
+    bool         pipeEmpty; // Maybe improves performance, i dunno...
     bObject     *player;
 };
 

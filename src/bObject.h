@@ -1,6 +1,7 @@
 #ifndef B_OBJECT_H_
 #define B_OBJECT_H_
 
+#include <vector>
 #include <stdio.h>
 #include "bUtil.h"
 
@@ -23,6 +24,6 @@ protected:
     v2 position, direction, plane, dimension;
     i16 id;
 };
-typedef bObject* bPipeline;
+typedef std::vector<bObject*> bPipeline;
 
 #endif

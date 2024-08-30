@@ -11,6 +11,7 @@ bObject::bObject(i16 _id, v2 _position, v2 _dimension) {
     this->position = _position;
     this->dimension = _dimension;
 }
+bObject::~bObject() { }
 
 v2 bObject::getPosition() { return this->position; }
 v2 bObject::getDirection() { return this->direction; }
